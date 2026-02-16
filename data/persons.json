@@ -1,0 +1,24 @@
+[
+  {
+    "id": "rahulkumar_1990_f2f8e5a3",
+    "ownerId": "user123",
+    "name": "Rahul Kumar Updated",
+    "birthTime": {
+      "year": 1990,
+      "month": 5,
+      "day": 15,
+      "hour": 14,
+      "minute": 30,
+      "second": 0,
+      "location": {
+        "latitude": 28.6139,
+        "longitude": 77.209,
+        "timezone": "Asia/Kolkata"
+      }
+    },
+    "gender": "Male",
+    "notes": "Updated notes for Rahul",
+    "createdAt": "2026-02-04T11:50:44.282Z",
+    "updatedAt": "2026-02-04T11:50:44.324Z"
+  }
+]

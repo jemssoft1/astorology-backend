@@ -1,0 +1,44 @@
+[
+  {
+    "id": "test_owner_1770610746305_fallback_test_user_2026_05e726bc",
+    "ownerId": "test_owner_1770610746305",
+    "name": "Fallback Test User",
+    "birthTime": "2026-02-09T04:19:06.305Z",
+    "gender": "Male",
+    "notes": "Created via fallback verification",
+    "birthLocation": "Test City",
+    "latitude": 10,
+    "longitude": 10,
+    "timezoneOffset": "+05:30",
+    "createdAt": "2026-02-09T04:19:06.336Z",
+    "updatedAt": "2026-02-09T04:19:06.336Z"
+  },
+  {
+    "id": "guest-qy5lfqmn4xe_ronik_2026_8f4206df",
+    "ownerId": "guest-qy5lfqmn4xe",
+    "name": "ronik",
+    "birthTime": "2026-02-08T18:30:00.000Z",
+    "gender": "Male",
+    "notes": "hello",
+    "birthLocation": "Surat, Gujarat, India",
+    "latitude": 21.1923647,
+    "longitude": 72.9551023,
+    "timezoneOffset": "+05:30",
+    "createdAt": "2026-02-09T06:11:07.049Z",
+    "updatedAt": "2026-02-09T06:11:07.049Z"
+  },
+  {
+    "id": "guest-qy5lfqmn4xe_ronik_2026_14a64f4a",
+    "ownerId": "guest-qy5lfqmn4xe",
+    "name": "ronik",
+    "birthTime": "2026-02-08T18:30:00.000Z",
+    "gender": "Male",
+    "notes": "hello",
+    "birthLocation": "Surat, Gujarat, India",
+    "latitude": 21.1923647,
+    "longitude": 72.9551023,
+    "timezoneOffset": "+05:30",
+    "createdAt": "2026-02-09T06:14:54.634Z",
+    "updatedAt": "2026-02-09T06:14:54.634Z"
+  }
+]

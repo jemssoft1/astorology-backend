@@ -1,0 +1,97 @@
+version: "3.8"
+
+services:
+  # Node.js API Service
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: astroweb-api
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=${DB_NAME:-astroweb}
+      - DB_USER=${DB_USER:-root}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+      - CORS_ORIGIN=${CORS_ORIGIN:-*}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - astroweb-network
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3000/health')",
+        ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
+
+  # MySQL Database Service
+  mysql:
+    image: mysql:8.0
+    container_name: astroweb-mysql
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME:-astroweb}
+      - MYSQL_CHARACTER_SET_SERVER=utf8mb4
+      - MYSQL_COLLATION_SERVER=utf8mb4_unicode_ci
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./src/database/migrations:/docker-entrypoint-initdb.d
+    networks:
+      - astroweb-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-p${DB_PASSWORD}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: --default-authentication-plugin=mysql_native_password
+
+  # Adminer (Optional - Database Management UI)
+  adminer:
+    image: adminer:latest
+    container_name: astroweb-adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - astroweb-network
+    depends_on:
+      - mysql
+
+networks:
+  astroweb-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local
