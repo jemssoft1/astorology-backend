@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= data.title || 'Horoscope Report' %></title>
+    <style>
+        body { background-color: #444; padding: 0 10px; margin: 0; min-width: fit-content; }
+        .page-container { margin: 10px auto; width: fit-content; }
+        .page { overflow: hidden; position: relative; background-color: white; width: 935px; height: 1210px; }
+        .t { transform-origin: bottom left; z-index: 2; position: absolute; white-space: pre; overflow: visible; line-height: 1.2; }
+        .text-container { white-space: pre; }
+        @supports (-webkit-touch-callout: none) { .text-container { white-space: normal; } }
+        img, svg { display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+    </style>
+    
+    <style id="dynamic-fonts" type="text/css">
+        <% if (data.fonts && data.fonts.length > 0) { %>
+            <% data.fonts.forEach(function(font) { %>
+                @font-face {
+                    font-family: '<%= font.family %>';
+                    src: url(<%= font.src %>) format("woff");
+                }
+            <% }); %>
+        <% } %>
+    </style>
+</head>
+<body>
+
+    <% if (data.pages && data.pages.length > 0) { %>
+        <% data.pages.forEach(function(page, index) { %>
+            <div class="page-container">
+                <section class="page" aria-label="Page <%= index + 1 %>">
+                    
+                    <div class="background-layer" style="z-index: 1;">
+                        <% if (page.isSvg) { %>
+                            <%- page.svgContent %>
+                        <% } else { %>
+                            <img src="<%= page.bgImage %>" alt="Page Background" />
+                        <% } %>
+                    </div>
+                    
+                    <div class="text-container">
+                        <% if (page.elements && page.elements.length > 0) { %>
+                            <% page.elements.forEach(function(el) { %>
+                                <span class="t <%= el.className %>" 
+                                      style="left:<%= el.left %>px; bottom:<%= el.bottom %>px; font-size:<%= el.fontSize %>px;
+                                             <% if(el.fontFamily){ %>font-family:'<%= el.fontFamily %>';<% } %>
+                                             <% if(el.color){ %>color:<%= el.color %>;<% } %>
+                                             <% if(el.letterSpacing){ %>letter-spacing:<%= el.letterSpacing %>px;<% } %>">
+                                    <%= el.text %>
+                                </span>
+                            <% }); %>
+                        <% } %>
+
+                        <% if (page.rows && page.rows.length > 0) { %>
+                            <% page.rows.forEach(function(row) { %>
+                                <span class="t" style="left:<%= row.x1 %>px; bottom:<%= row.y %>px;"><%= row.c1 %></span>
+                                <span class="t" style="left:<%= row.x2 %>px; bottom:<%= row.y %>px;"><%= row.c2 %></span>
+                                <% if(row.c3) { %>
+                                    <span class="t" style="left:<%= row.x3 %>px; bottom:<%= row.y %>px;"><%= row.c3 %></span>
+                                <% } %>
+                            <% }); %>
+                        <% } %>
+
+                        <span class="t" style="left:462px; bottom:8px; font-family:'OpenSans-Regular_4p';"><%= index + 1 %></span>
+                        <span class="t" style="left:771px; bottom:2px; font-size:10px; font-family:'OpenSans-Regular_4p';">astrologyapi.com</span>
+                    </div>
+                </section>
+            </div>
+        <% }); %>
+    <% } %>
+
+</body>
+</html>

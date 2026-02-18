@@ -4,6 +4,7 @@ import { Time } from "../../types/interfaces";
 import { TimeUtil } from "../../utils/TimeUtil";
 import { externalApiRouters } from "../../utils/externalApiRouters";
 import { apiCache } from "../../utils/cache";
+import { ErrorLogRepository } from "../../database/repositories/ErrorLogRepository";
 
 const router = express.Router();
 
@@ -15,12 +16,13 @@ const handleExternalProxy = async (
   res: Response,
   endpoint: string,
 ) => {
+  let externalParams: any = {};
   try {
     // 1. Parse and normalize time
     const time: Time = TimeUtil.normalizeTime(req.body.time || req.body);
 
     // 2. Map internal Time to external API params
-    const externalParams = {
+    externalParams = {
       day: time.day,
       month: time.month,
       year: time.year,
@@ -61,7 +63,7 @@ const handleExternalProxy = async (
         Authorization: `Basic ${API_TOKEN}`,
         "Content-Type": "application/json",
       },
-      timeout: 120000, // 120 second timeout (increased from 60s)
+      timeout: 120000, // 120 second timeout
     });
 
     console.log(`✅ [EXTERNAL API] Success: ${fullUrl}`);
@@ -95,6 +97,16 @@ const handleExternalProxy = async (
 
     const status = error.response?.status || 500;
     const errorMessage = error.response?.data?.error || error.message;
+
+    // Log to Database
+    ErrorLogRepository.create({
+      endpoint: `EXT: ${endpoint}`,
+      errorMessage: `External API Error: ${errorMessage}`,
+      stackTrace: error.stack || "",
+      userId: (req as any).user?.id,
+      requestBody: JSON.stringify(externalParams),
+    }).catch((e) => console.error("Failed to log external error to DB:", e));
+
     res.status(status).json({ success: false, error: errorMessage });
   }
 };
@@ -128,6 +140,24 @@ router.post(
 router.post("/sub_chardasha/:md", async (req: Request, res: Response) => {
   const { md } = req.params;
   return handleExternalProxy(req, res, `/sub_chardasha/${md}`);
+});
+
+/**
+ * Endpoint to get Sub Sub Char Dasha from external Astrology API
+ * Route: POST /api/sub_sub_chardasha/:md/:ad
+ */
+router.post("/sub_sub_chardasha/:md/:ad", async (req: Request, res: Response) => {
+  const { md, ad } = req.params;
+  return handleExternalProxy(req, res, `/sub_sub_chardasha/${md}/${ad}`);
+});
+
+/**
+ * Endpoint to get Sub Sub Sub Char Dasha from external Astrology API
+ * Route: POST /api/sub_sub_sub_chardasha/:md/:ad/:pd
+ */
+router.post("/sub_sub_sub_chardasha/:md/:ad/:pd", async (req: Request, res: Response) => {
+  const { md, ad, pd } = req.params;
+  return handleExternalProxy(req, res, `/sub_sub_sub_chardasha/${md}/${ad}/${pd}`);
 });
 router.post("/sub_vdasha/:md", async (req: Request, res: Response) => {
   const { md } = req.params;

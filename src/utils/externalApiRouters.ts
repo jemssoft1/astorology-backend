@@ -33,7 +33,7 @@ export const externalApiRouters = {
   // --- Char Dasha Routes ---
   CurrentCharDasha: "/current_chardasha",
   MajorCharDasha: "/major_chardasha",
-  SubSubCharDasha: "/sub_sub_chardasha",
+  // SubSubCharDasha: "/sub_sub_chardasha", // MOVED to parameterized routes in external-api-proxy.ts
   // Note: SubCharDasha is parameterized: /sub_chardasha/:md
 
   // --- Vimshottari Dasha Routes ---

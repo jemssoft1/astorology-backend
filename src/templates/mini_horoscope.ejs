@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= data.title || 'Horoscope Report' %></title>
+    <style>
+        /* EXACT CSS FROM YOUR ORIGINAL DESIGN */
+        body { background-color: #444; padding: 0 10px; margin: 0; min-width: fit-content; }
+        .page-container { margin: 10px auto; width: fit-content; }
+        .page { overflow: hidden; position: relative; background-color: white; width: 935px; height: 1210px; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .t { transform-origin: bottom left; z-index: 2; position: absolute; white-space: pre; overflow: visible; line-height: 1.2; }
+        .text-container { white-space: pre; }
+        @supports (-webkit-touch-callout: none) { .text-container { white-space: normal; } }
+        img, svg { display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
+        
+        /* DYNAMIC FONTS */
+        <% if (data.fonts && data.fonts.length > 0) { %>
+            <% data.fonts.forEach(function(font) { %>
+                @font-face { font-family: '<%= font.family %>'; src: url(<%= font.src %>) format("woff"); }
+            <% }); %>
+        <% } %>
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        <section class="page">
+            <img src="<%= data.page1.bgImage %>">
+            <div class="text-container">
+                <span class="t" style="left:345px; bottom:1115px; font-size:22px; font-family:'Baloo-Regular_53';">॥ श्री गणेशाय नमः ॥</span>
+                <span class="t" style="left:384px; bottom:965px; font-size:16px;">HOROSCOPE FOR</span>
+                <span class="t" style="left:400px; bottom:900px; font-size:24px; font-weight:bold; font-family:'Laila-Bold_4z';"><%= data.page1.userName %></span>
+                <span class="t" style="left:340px; bottom:840px;"><%= data.page1.dob %> | <%= data.page1.tob %></span>
+                <span class="t" style="left:340px; bottom:810px;"><%= data.page1.pob %></span>
+                <span class="t" style="left:462px; bottom:8px;">1</span>
+            </div>
+        </section>
+    </div>
+
+    <div class="page-container">
+        <section class="page">
+            <img src="<%= data.page2.bgImage %>">
+            <div class="text-container">
+                <span class="t" style="left:337px; bottom:1111px; font-size:20px; font-family:'Laila-Bold_4z';">Basic Astrological Details</span>
+                <span class="t" style="left:88px; bottom:1037px; font-size:16px; font-weight:bold;">Basic Details</span>
+                <% data.page2.basicDetails.forEach(function(row, i) { %>
+                    <span class="t" style="left:88px; bottom:<%= 1004 - (i * 25) %>px;">"<%= row.key %>"</span>
+                    <span class="t" style="left:240px; bottom:<%= 1004 - (i * 25) %>px;">,"<%= row.value %>"</span>
+                <% }); %>
+                <span class="t" style="left:462px; bottom:8px;">2</span>
+            </div>
+        </section>
+    </div>
+
+    <div class="page-container">
+        <section class="page">
+            <img src="<%= data.page3.bgImage %>">
+            <div class="chart-svg-container" style="position: absolute; left: 142px; top: 180px; width: 650px; height: 650px; z-index: 2;">
+                <%- data.page3.chartSvg %>
+            </div>
+            <div class="text-container">
+                <span class="t" style="left:330px; bottom:1111px; font-size:20px; font-family:'Laila-Bold_4z'; text-align:center; width:275px;"><%= data.page3.chartTitle %></span>
+                <span class="t" style="left:462px; bottom:8px;">3</span>
+            </div>
+        </section>
+    </div>
+
+    <div class="page-container">
+        <section class="page">
+            <img src="<%= data.page4.bgImage %>">
+            <div class="text-container">
+                <span class="t" style="left:358px; bottom:1111px; font-size:20px; font-family:'Laila-Bold_4z';">Planetary Positions</span>
+                <% data.page4.planets.forEach(function(p, i) { %>
+                    <% let y = 1004 - (i * 28); %>
+                    <span class="t" style="left:88px; bottom:<%= y %>px;"><%= p.name %></span>
+                    <span class="t" style="left:300px; bottom:<%= y %>px;"><%= p.rasi %></span>
+                    <span class="t" style="left:512px; bottom:<%= y %>px;"><%= p.degree %></span>
+                    <span class="t" style="left:724px; bottom:<%= y %>px;"><%= p.nakshatra %></span>
+                <% }); %>
+                <span class="t" style="left:462px; bottom:8px;">4</span>
+            </div>
+        </section>
+    </div>
+
+    <div class="page-container">
+        <section class="page">
+            <img src="<%= data.page5.bgImage %>">
+            <div class="text-container">
+                <span class="t" style="left:345px; bottom:1111px; font-size:20px; font-family:'Laila-Bold_4z';">Vimshottari Dasha</span>
+                <% data.page5.dasha.forEach(function(d, i) { %>
+                    <% let y = 1004 - (i * 28); %>
+                    <span class="t" style="left:88px; bottom:<%= y %>px;"><%= d.planet %></span>
+                    <span class="t" style="left:300px; bottom:<%= y %>px;"><%= d.start %></span>
+                    <span class="t" style="left:600px; bottom:<%= y %>px;"><%= d.end %></span>
+                <% }); %>
+                <span class="t" style="left:462px; bottom:8px;">5</span>
+            </div>
+        </section>
+    </div>
+
+    <% [data.page6, data.page7].forEach(function(pData, idx) { %>
+        <div class="page-container">
+            <section class="page">
+                <img src="<%= pData.bgImage %>">
+                <div class="text-container">
+                    <span class="t" style="left:358px; bottom:1111px; font-size:20px; font-family:'Laila-Bold_4z';">Ascendant Report</span>
+                    <div style="position: absolute; left: 88px; bottom: 200px; width: 759px; height: 600px; z-index: 2;">
+                        <p style="font-family:'OpenSans-Regular_4p'; font-size: 14px; line-height: 1.6; text-align: justify; color: #333;"><%- pData.reportText %></p>
+                    </div>
+                    <span class="t" style="left:462px; bottom:8px;"><%= idx + 6 %></span>
+                </div>
+            </section>
+        </div>
+    <% }); %>
+
+    <div class="page-container">
+        <section class="page">
+            <img src="<%= data.page8.bgImage %>">
+            <div class="text-container">
+                <span class="t" style="left:88px; bottom:850px; font-size:16px; font-weight:bold; color:green;">Positive Traits</span>
+                <% data.page8.positiveTraits.forEach(function(t, i) { %>
+                    <span class="t" style="left:88px; bottom:<%= 815 - (i * 25) %>px;">• <%= t %></span>
+                <% }); %>
+                <span class="t" style="left:467px; bottom:850px; font-size:16px; font-weight:bold; color:red;">Negative Traits</span>
+                <% data.page8.negativeTraits.forEach(function(t, i) { %>
+                    <span class="t" style="left:467px; bottom:<%= 815 - (i * 25) %>px;">• <%= t %></span>
+                <% }); %>
+                <span class="t" style="left:462px; bottom:8px;">8</span>
+            </div>
+        </section>
+    </div>
+
+    <div class="page-container">
+        <section class="page">
+            <img src="<%= data.page9.bgImage %>">
+            <div class="text-container">
+                <span class="t" style="left:380px; bottom:1100px; font-size:20px; font-weight:bold;">Conclusion</span>
+                <div style="position: absolute; left: 100px; bottom: 400px; width: 735px; z-index: 2;">
+                    <p style="text-align: justify; font-family:'OpenSans-Regular_4p'; font-size: 14px; color: #333;"><%- data.page9.reportText %></p>
+                </div>
+                <span class="t" style="left:462px; bottom:8px;">9</span>
+            </div>
+        </section>
+    </div>
+
+</body>
+</html>

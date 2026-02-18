@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horoscope Report</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Lato', sans-serif;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 0;
+            margin: 0 auto;
+            page-break-after: always;
+            position: relative;
+            overflow: hidden;
+            background: white;
+        }
+
+        /* --- COVER PAGE --- */
+        .cover-page {
+            background: linear-gradient(135deg, #2c0e58 0%, #4a148c 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 297mm; /* Full height */
+        }
+
+        .cover-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            color: #FFEB3B; /* Yellow */
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .cover-subtitle {
+            font-size: 1.5rem;
+            color: #E1BEE7;
+            margin-bottom: 4rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .graphic-circle {
+            width: 200px;
+            height: 200px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 4rem;
+            box-shadow: 0 0 20px rgba(255,235,59, 0.2);
+        }
+        
+        .graphic-inner {
+            font-size: 5rem;
+            color: #FFEB3B;
+        }
+
+        .cover-footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: #230846; /* Darker purple */
+            padding: 2rem 0;
+        }
+
+        .client-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .birth-details {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        /* --- STANDARD PAGE --- */
+        .content-page {
+            padding: 40px;
+        }
+
+        .header-bar {
+            background: #D1C4E9;
+            height: 15px;
+            margin: -40px -40px 30px -40px;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: #4a148c;
+            border-bottom: 2px solid #FFEB3B;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #2c0e58;
+            margin-top: 20px;
+        }
+
+        p {
+            line-height: 1.6;
+            color: #333;
+            text-align: justify;
+            margin-bottom: 15px;
+        }
+
+        /* --- TABLES --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th {
+            background: #E1BEE7;
+            color: #2c0e58;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:nth-child(even) {
+            background: #F3E5F5;
+        }
+        
+        /* --- VISUALS --- */
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        
+        .wheel-svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* --- FOOTER --- */
+        .page-footer {
+            position: absolute;
+            bottom: 20px;
+            left: 40px;
+            right: 40px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- PAGE 1: COVER -->
+    <div class="page cover-page">
+        <div class="cover-title">BIRTH CHART<br>REPORT</div>
+        <div class="cover-subtitle">Your Astrological Portrait</div>
+        
+        <div class="graphic-circle">
+            <div class="graphic-inner">★</div>
+        </div>
+
+        <div class="cover-footer">
+            <div class="client-name"><%= name %></div>
+            <div class="birth-details">
+                <%= birthDetails.dob %> at <%= birthDetails.tob %><br>
+                <%= birthDetails.place %>
+            </div>
+            <div style="margin-top: 20px; font-size: 0.9rem; opacity: 0.6;">
+                GENERATED BY JEMSOFT ASTROLOGY
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 2: INTRODUCTION & ASTRONOMICAL DETAILS -->
+    <div class="page content-page">
+        <div class="header-bar"></div>
+        <h1>Introduction</h1>
+        
+        <p><strong>Dear <%= name %>,</strong></p>
+        <p>This comprehensive astrological report provides a deep dive into the cosmic influences at the time of your birth. calculated using high-precision ephemeris data.</p>
+        
+        <h2>Astronomical Details</h2>
+        <table class="info-table">
+            <tr>
+                <th>Sun Rise</th>
+                <td><%= panchang.sunrise %></td>
+                <th>Sun Set</th>
+                <td><%= panchang.sunset %></td>
+            </tr>
+            <tr>
+                <th>Tithi</th>
+                <td><%= panchang.tithi %></td>
+                <th>Yoga</th>
+                <td><%= panchang.yoga %></td>
+            </tr>
+            <tr>
+                <th>Nakshatra</th>
+                <td><%= panchang.nakshatra %></td>
+                <th>Karana</th>
+                <td><%= panchang.karana %></td>
+            </tr>
+            <tr>
+                <th>Ayanamsa</th>
+                <td>23.85° (Lahiri)</td>
+                <th>Ascendant</th>
+                <td><%= parseFloat(ascendant).toFixed(2) %>°</td>
+            </tr>
+        </table>
+        
+        <h2>Elemental Balance</h2>
+        <table class="info-table">
+            <tr>
+                <th>Fire</th>
+                <td><%= elements.fire %> Planets</td>
+                <th>Earth</th>
+                <td><%= elements.earth %> Planets</td>
+            </tr>
+            <tr>
+                <th>Air</th>
+                <td><%= elements.air %> Planets</td>
+                <th>Water</th>
+                <td><%= elements.water %> Planets</td>
+            </tr>
+        </table>
+        
+        <h2>Modal Balance</h2>
+        <table class="info-table">
+            <tr>
+                <th>Cardinal</th>
+                <td><%= modes.cardinal %></td>
+                <th>Fixed</th>
+                <td><%= modes.fixed %></td>
+                <th>Mutable</th>
+                <td><%= modes.mutable %></td>
+            </tr>
+        </table>
+
+        <div class="page-footer">
+            <span>Natal Report</span>
+            <span>Page 2</span>
+            <span><%= company.domainUrl %></span>
+        </div>
+    </div>
+
+    <!-- PAGE 3: NATAL CHART WHEEL -->
+    <div class="page content-page">
+        <div class="header-bar"></div>
+        <h1>Your Natal Chart</h1>
+        
+        <div class="chart-container">
+            <svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                <!-- Chart Background -->
+                <circle cx="200" cy="200" r="190" fill="none" stroke="#2c0e58" stroke-width="2"/>
+                <circle cx="200" cy="200" r="150" fill="none" stroke="#aaa" stroke-width="1"/>
+                <circle cx="200" cy="200" r="40" fill="#F3E5F5" stroke="none"/>
+                
+                <!-- House Lines -->
+                <% for(let i=0; i<12; i++) { 
+                   const ang = (i * 30) * Math.PI/180;
+                   const x2 = 200 + Math.cos(ang) * 190;
+                   const y2 = 200 + Math.sin(ang) * 190;
+                %>
+                    <line x1="200" y1="200" x2="<%= x2 %>" y2="<%= y2 %>" stroke="#ddd" />
+                <% } %>
+
+                 <!-- AC Line -->
+                 <line x1="10" y1="200" x2="200" y2="200" stroke="#2c0e58" stroke-width="2" />
+                 <text x="15" y="195" font-size="12" fill="#2c0e58" font-weight="bold">AC</text>
+
+                <!-- Planets -->
+                <% 
+                   const ascendant = horoscope.ascendant;
+                   horoscope.planets.forEach(function(p) {
+                       if (p.name === 'Ascendant') return;
+                       
+                       let diff = (p.longitude - ascendant);
+                       let rad = (180 - diff) * Math.PI / 180;
+                       
+                       // Simple collision avoidance or stacking could be added here
+                       // For now, random radius variation slightly
+                       const r = 160 + (Math.random() * 20 - 10); 
+                       
+                       const px = 200 + Math.cos(rad) * r;
+                       const py = 200 + Math.sin(rad) * r;
+                       
+                       const lx = 200 + Math.cos(rad) * (r - 20);
+                       const ly = 200 + Math.sin(rad) * (r - 20);
+                %>
+                    <circle cx="<%= px %>" cy="<%= py %>" r="4" fill="#4a148c" stroke="white" stroke-width="1"/>
+                    <text x="<%= lx %>" y="<%= ly %>" font-size="9" fill="#2c0e58" text-anchor="middle" alignment-baseline="middle" font-weight="bold"><%= p.name.substring(0,2) %></text>
+                <% }); %>
+            </svg>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <p><strong>Tropical Zodiac / Equal Houses</strong></p>
+        </div>
+
+        <div class="page-footer">
+            <span>Natal Report</span>
+            <span>Page 3</span>
+            <span><%= company.domainUrl %></span>
+        </div>
+    </div>
+
+    <!-- PAGE 4: PLANETARY POSITIONS -->
+    <div class="page content-page">
+        <div class="header-bar"></div>
+        <h1>Planetary Positions</h1>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Planet</th>
+                    <th>Sign & Degree</th>
+                    <th>Retro</th>
+                    <th>Element</th>
+                    <th>Nakshatra</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% horoscope.planets.forEach(function(p) { 
+                    const d = Math.floor(p.longitude % 30);
+                    const m = Math.floor((p.longitude - Math.floor(p.longitude)) * 60);
+                    const signShort = p.sign ? p.sign.substring(0, 3) : "---";
+                    const degStr = `${d}° ${signShort} ${m}'`;
+                %>
+                <tr>
+                    <td><%= p.name %></td>
+                    <td><%= degStr %></td>
+                    <td><%= p.isRetro ? "Rx" : "-" %></td>
+                    <td><%= p.element %> / <%= p.mode %></td>
+                    <td><%= p.nakshatra %> (<%= p.nakshatraLord %>)</td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <div class="page-footer">
+            <span>Natal Report</span>
+            <span>Page 4</span>
+            <span><%= company.domainUrl %></span>
+        </div>
+    </div>
+
+    <!-- PAGE 4b: HOUSE CUSPS -->
+    <div class="page content-page">
+        <div class="header-bar"></div>
+        <h1>House Cusps (Placidus/Equal)</h1>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>House</th>
+                    <th>Sign</th>
+                    <th>Degree</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% horoscope.houses.forEach(function(h) { 
+                    const d = Math.floor(h.degree);
+                    const m = Math.floor((h.degree - d) * 60);
+                    const degStr = `${d}° ${m}'`;
+                %>
+                <tr>
+                    <td><%= h.house %></td>
+                    <td><%= h.sign %></td>
+                    <td><%= degStr %></td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <div class="page-footer">
+            <span>Natal Report</span>
+            <span>Page 4b</span>
+            <span><%= company.domainUrl %></span>
+        </div>
+    </div>
+
+    <!-- PAGE 5: ASPECTS -->
+    <div class="page content-page">
+        <div class="header-bar"></div>
+        <h1>Planetary Aspects</h1>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Planet 1</th>
+                    <th>Aspect</th>
+                    <th>Planet 2</th>
+                    <th>Orb</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% horoscope.aspects.forEach(function(a) { %>
+                <tr>
+                    <td><%= a.p1 %></td>
+                    <td><%= a.type %></td>
+                    <td><%= a.p2 %></td>
+                    <td><%= a.orb %>°</td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+         <div class="page-footer">
+            <span>Natal Report</span>
+            <span>Page 5</span>
+            <span><%= company.domainUrl %></span>
+        </div>
+    </div>
+
+    <!-- PAGE 6+: INTERPRETATIONS -->
+    <% 
+       let pageCount = 6;
+       horoscope.interpretations.forEach(function(interp) { 
+    %>
+    <div class="page content-page">
+        <div class="header-bar"></div>
+        <h1><%= interp.planet %> Profile</h1>
+        
+        <p><%= interp.text %></p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        
+        <div class="page-footer">
+            <span>Natal Report</span>
+            <span>Page <%= pageCount++ %></span>
+            <span><%= company.domainUrl %></span>
+        </div>
+    </div>
+    <% }); %>
+
+</body>
+</html>
