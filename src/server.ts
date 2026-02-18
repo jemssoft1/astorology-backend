@@ -32,7 +32,7 @@ import calendarRoutes from "./routes/calendar.routes"; // Calendar API
 import { initDB } from "./database/sequelize";
 
 // Middleware Imports
-import { apiLogger } from "./api/middleware/apiLogger.middleware";
+
 import { errorHandler } from "./api/middleware/errorHandler.middleware";
 
 const app = express();
@@ -53,7 +53,9 @@ function countRoutes(stack: any[]): number {
 
 // Middleware
 // CORS Configuration
-const allowedOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(",") : [];
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",")
+  : [];
 
 app.use(
   cors({
@@ -62,14 +64,18 @@ app.use(
       if (!origin) return callback(null, true);
 
       // Check if origin is allowed
-      if (allowedOrigins.includes(origin) || origin.includes("localhost") || origin.includes("127.0.0.1")) {
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.includes("localhost") ||
+        origin.includes("127.0.0.1")
+      ) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 
@@ -90,7 +96,6 @@ try {
 }
 
 // Mount Routes
-app.use("/api", apiLogger); // Log all /api requests and visitors
 
 app.use("/api/person", personRoutes);
 app.use("/api/match", matchRoutes);
@@ -136,8 +141,6 @@ app.use("/api/*", (req, res) => {
 
 // Global Error Handler (Must be after all routes)
 app.use(errorHandler);
-
-
 
 // Start Server if run directly
 if (require.main === module) {

@@ -189,4 +189,7 @@ export const externalApiRouters = {
   YesNoTarot: "/yes_no_tarot",
   ChineseZodiac: "/chinese_zodiac",
   ChineseYearForecast: "/chinese_year_forecast",
+
+  Manglik: "/manglik",
+  SimpleManglik: "/simple_manglik",
 };
