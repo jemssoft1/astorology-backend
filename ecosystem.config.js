@@ -23,7 +23,7 @@ module.exports = {
       max_restarts: 10,
       min_uptime: "10s",
       listen_timeout: 3000,
-      kill_timeout: 5000,
+      kill_timeout: 3000,
     },
   ],
 };

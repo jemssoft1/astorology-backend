@@ -161,7 +161,7 @@ export class ChartSvgGenerator {
       const symbol =
         this.PLANET_SYMBOLS[planetName] || planetName.substring(0, 2);
       let color = ["Asc", "Lagna", "Ascendant"].includes(planetName)
-        ? "#D50000"
+        ? "#D30000"
         : "#000000";
 
       if (["Saturn", "Mars", "Rahu", "Ketu"].includes(planetName))
@@ -451,7 +451,7 @@ export class ChartSvgGenerator {
       x="${ascCoords.planetX}" 
       y="${ascCoords.planetY + houseOccupancy[1] * 40}" 
       font-size="32" 
-      fill="#D50000" 
+      fill="#D30000" 
       font-weight="bold"
       text-anchor="middle">Asc</text>`;
     houseOccupancy[1]++;

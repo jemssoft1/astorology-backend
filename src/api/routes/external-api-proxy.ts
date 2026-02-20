@@ -34,12 +34,30 @@ const handleExternalProxy = async (
       ...req.body, // Merge any extra parameters (e.g., dasha_date)
     };
 
+    // Log full request for kalsarpa_details debugging
+    if (endpoint.includes("kalsarpa_details")) {
+      console.log(
+        `📋 [DEBUG kalsarpa] req.body:`,
+        JSON.stringify(req.body, null, 2),
+      );
+      console.log(
+        `📋 [DEBUG kalsarpa] externalParams:`,
+        JSON.stringify(externalParams, null, 2),
+      );
+    }
+
     // 3. Check cache first
     const cacheKey = apiCache.generateKey(endpoint, externalParams);
     const cachedResponse = apiCache.get(cacheKey);
 
     if (cachedResponse) {
       console.log(`⚡ [CACHE] Returning cached response for: ${endpoint}`);
+      if (endpoint.includes("kalsarpa_details")) {
+        console.log(
+          `⚡ [CACHE kalsarpa] Cached data:`,
+          JSON.stringify(cachedResponse, null, 2),
+        );
+      }
       return res.json(cachedResponse);
     }
 
@@ -47,8 +65,19 @@ const handleExternalProxy = async (
     const API_URL = process.env.API_LINK;
     const API_TOKEN = process.env.API_TOKEN;
 
+    if (!API_URL || !API_TOKEN) {
+      console.error(
+        `❌ [CONFIG ERROR] Missing env vars - API_LINK: ${!!API_URL}, API_TOKEN: ${!!API_TOKEN}`,
+      );
+      return res.status(500).json({
+        success: false,
+        error:
+          "External API configuration is missing. Check API_LINK and API_TOKEN in .env",
+      });
+    }
+
     // Ensure no double slash and handle leading slash in endpoint
-    const baseUrl = API_URL?.endsWith("/") ? API_URL.slice(0, -1) : API_URL;
+    const baseUrl = API_URL.endsWith("/") ? API_URL.slice(0, -1) : API_URL;
     const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
     const fullUrl = `${baseUrl}${cleanEndpoint}`;
 
@@ -68,6 +97,14 @@ const handleExternalProxy = async (
 
     console.log(`✅ [EXTERNAL API] Success: ${fullUrl}`);
 
+    // Log full response for specific endpoints
+    if (endpoint.includes("kalsarpa_details")) {
+      console.log(
+        `📋 [EXTERNAL API] Response for ${endpoint}:`,
+        JSON.stringify(response.data, null, 2),
+      );
+    }
+
     // 5. Cache the response
     apiCache.set(cacheKey, response.data);
 
@@ -75,6 +112,7 @@ const handleExternalProxy = async (
     res.json(response.data);
   } catch (error: any) {
     console.error(`❌ Error in external proxy [${endpoint}]:`);
+    console.error(`Code: ${error.code}`);
     console.error(`Status: ${error.response?.status}`);
     console.error(`Message: ${error.message}`);
 
@@ -146,19 +184,29 @@ router.post("/sub_chardasha/:md", async (req: Request, res: Response) => {
  * Endpoint to get Sub Sub Char Dasha from external Astrology API
  * Route: POST /api/sub_sub_chardasha/:md/:ad
  */
-router.post("/sub_sub_chardasha/:md/:ad", async (req: Request, res: Response) => {
-  const { md, ad } = req.params;
-  return handleExternalProxy(req, res, `/sub_sub_chardasha/${md}/${ad}`);
-});
+router.post(
+  "/sub_sub_chardasha/:md/:ad",
+  async (req: Request, res: Response) => {
+    const { md, ad } = req.params;
+    return handleExternalProxy(req, res, `/sub_sub_chardasha/${md}/${ad}`);
+  },
+);
 
 /**
  * Endpoint to get Sub Sub Sub Char Dasha from external Astrology API
  * Route: POST /api/sub_sub_sub_chardasha/:md/:ad/:pd
  */
-router.post("/sub_sub_sub_chardasha/:md/:ad/:pd", async (req: Request, res: Response) => {
-  const { md, ad, pd } = req.params;
-  return handleExternalProxy(req, res, `/sub_sub_sub_chardasha/${md}/${ad}/${pd}`);
-});
+router.post(
+  "/sub_sub_sub_chardasha/:md/:ad/:pd",
+  async (req: Request, res: Response) => {
+    const { md, ad, pd } = req.params;
+    return handleExternalProxy(
+      req,
+      res,
+      `/sub_sub_sub_chardasha/${md}/${ad}/${pd}`,
+    );
+  },
+);
 router.post("/sub_vdasha/:md", async (req: Request, res: Response) => {
   const { md } = req.params;
   return handleExternalProxy(req, res, `/sub_vdasha/${md}`);

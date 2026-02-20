@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config(); // Load .env BEFORE any other imports read process.env
+
 import express, { Request, Response } from "express";
 import path from "path";
 import cors from "cors";
